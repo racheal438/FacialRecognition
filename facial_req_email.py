@@ -19,14 +19,15 @@ cascade = "haarcascade_frontalface_default.xml"
 
 #function for setting up emails
 def send_message(name):
-    return requests.post(
-        "https://api.mailgun.net/v3/YOUR_DOMAIN_NAME/messages",
-        auth=("api", "YOUR_API_KEY"),
-        files = [("attachment", ("image.jpg", open("image.jpg", "rb").read()))],
-        data={"from": 'hello@example.com',
-            "to": ["YOUR_MAILGUN_EMAIL_ADDRESS"],
-            "subject": "You have a visitor",
-            "html": "<html>" + name + " is at your door.  </html>"})
+   	return requests.post(
+		"https://api.mailgun.net/v3/sandbox5799b990c7c54e1184f6c669b90ad5c5.mailgun.org/messages",
+		auth=("api", "6e92ee7d15a9deb0cb03d1eb24604ce7-02fa25a3-7bf7ebba"),
+		files = [("attachment", ("image.jpg", open("image.jpg", "rb").read()))],
+		data={"from": "Queens Home mailgun@sandbox5799b990c7c54e1184f6c669b90ad5c5.mailgun.org",
+			"to": ["zinwotatimothy@gmail.com"],
+		   "subject": "Visitor Alert",
+            "html": "<html> <h1>Recognized Someone!!</h1></br>Your Raspberry Pi recognizes someone. </html>" + name + "is at the door!!!"})
+                      
 
 # load the known faces and embeddings along with OpenCV's Haar
 # cascade for face detection
@@ -76,6 +77,8 @@ while True:
 		matches = face_recognition.compare_faces(data["encodings"],
 			encoding)
 		name = "Unknown"
+ 	
+
 
 		# check to see if we have found a match
 		if True in matches:
@@ -108,9 +111,15 @@ while True:
 				#Now send me an email to let me know who is at the door
 				request = send_message(name)
 				print ('Status Code: '+format(request.status_code)) #200 status code means email sent successfully
+		else:
+			print("Unknown face")
+			
+  
 				
 		# update the list of names
 		names.append(name)
+			
+  
 
 	# loop over the recognized faces
 	for ((top, right, bottom, left), name) in zip(boxes, names):
